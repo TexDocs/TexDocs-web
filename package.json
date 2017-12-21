@@ -1,0 +1,39 @@
+{
+  "name": "TexDocs-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TexDocs/TexDocs-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TexDocs/TexDocs-web/issues"
+  },
+  "homepage": "https://github.com/TexDocs/TexDocs-web#readme",
+  "dependencies": {
+    "compression": "^1.7.1",
+    "express": "^4.16.2",
+    "freactal": "^2.0.0",
+    "isomorphic-unfetch": "^2.0.0",
+    "jss": "latest",
+    "jss-preset-default": "latest",
+    "material-ui": "next",
+    "next": "^4.2.1",
+    "next-routes": "^1.2.0",
+    "raf": "^3.4.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-jss": "^8.2.0",
+    "sw-precache-webpack-plugin": "^0.11.4"
+  }
+}
