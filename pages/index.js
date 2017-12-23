@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from 'prop-types';
 import { Router } from '../routes';
 
-import 'isomorphic-unfetch'
+import 'isomorphic-unfetch';
 
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -39,6 +39,17 @@ class Index extends Component {
                     console.warn('service worker registration failed', err.message)
                 })
         }
+
+        const RTVCS = require('../static/wasm/rtvcs_web');
+        const WSAPI = require('../static/wasm/websocket_api_web');
+
+        WSAPI.then( (wsapi) => {
+            console.log("Inc|wsapi", wsapi.incrementArray([1, 2, 3, 4]));
+        });
+
+        RTVCS.then( (rtvcs) => {
+            console.log("Inc|rtvcs", rtvcs.incrementArray([1, 2, 3, 4]));
+        });
     }
 
     render() {

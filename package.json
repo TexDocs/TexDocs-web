@@ -5,9 +5,9 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node server/index.js",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "NODE_ENV=production node server/index.js"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,10 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-jss": "^8.2.0",
-    "sw-precache-webpack-plugin": "^0.11.4"
+    "sw-precache-webpack-plugin": "^0.11.4",
+    "uws": "^9.14.0"
+  },
+  "devDependencies": {
+    "wasm-loader": "^1.1.0"
   }
 }

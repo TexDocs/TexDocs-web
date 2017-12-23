@@ -1,4 +1,8 @@
 /.next/
+/wasm/rtvcs
+/wasm/websocket_api
+/static/wasm/*
+!/static/wasm/.gitkeep
 
 # Created by .ignore support plugin (hsz.mobi)
 ### TeX template
