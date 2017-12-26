@@ -41,11 +41,6 @@ class Index extends Component {
         }
 
         const RTVCS = require('../static/wasm/rtvcs_web');
-        const WSAPI = require('../static/wasm/websocket_api_web');
-
-        WSAPI.then( (wsapi) => {
-            console.log("Inc|wsapi", wsapi.incrementArray([1, 2, 3, 4]));
-        });
 
         RTVCS.then( (rtvcs) => {
             console.log("Inc|rtvcs", rtvcs.incrementArray([1, 2, 3, 4]));
@@ -58,14 +53,15 @@ class Index extends Component {
             <AppBar position="static" color="default">
                 <Toolbar>
                     <Typography type="title" color="inherit">
-                        Latest news!
+                        All the projects!
                     </Typography>
                 </Toolbar>
             </AppBar>
 
-            <StoryList stories={this.props.stories} />
 
-
+            <Link prefetch route="project" params={{ id: "cd273b4c-bdf7-4133-a2de-87ec7634af14" }}>
+                <a>Project 1</a>
+            </Link>
         </div>
     }
 }

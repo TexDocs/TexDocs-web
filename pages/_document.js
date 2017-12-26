@@ -26,6 +26,8 @@ class MyDocument extends Document {
                 <link rel="manifest" href="/static/manifest.json" />
 
                 <link rel='stylesheet' href='/static/style.css' />
+                <link rel='stylesheet' href='/static/codemirror.css' />
+                <link rel='stylesheet' href='/static/material.css' />
                 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" />
             </Head>
             <body>
