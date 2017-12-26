@@ -1,47 +1,27 @@
 {
-  "name": "TexDocs-web",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "texdocs-web",
+  "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "node server/index.js",
-    "build": "next build",
-    "start": "NODE_ENV=production node server/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TexDocs/TexDocs-web.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/TexDocs/TexDocs-web/issues"
-  },
-  "homepage": "https://github.com/TexDocs/TexDocs-web#readme",
   "dependencies": {
     "codemirror": "^5.33.0",
-    "compression": "^1.7.1",
-    "express": "^4.16.2",
     "freactal": "^2.0.0",
-    "isomorphic-unfetch": "^2.0.0",
-    "jss": "latest",
-    "jss-preset-default": "latest",
-    "material-ui": "next",
-    "next": "^4.2.1",
-    "next-routes": "^1.2.0",
-    "raf": "^3.4.0",
+    "lodash": "^4.17.4",
+    "material-ui": "^1.0.0-beta.25",
+    "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-codemirror2": "^3.0.7",
     "react-dom": "^16.2.0",
-    "react-jss": "^8.2.0",
+    "react-height": "^3.0.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
     "react-splitter-layout": "^3.0.0",
     "reconnecting-websocket": "^3.2.2",
-    "sw-precache-webpack-plugin": "^0.11.4",
-    "uws": "^9.14.0"
+    "typeface-roboto": "^0.0.45"
   },
-  "devDependencies": {
-    "wasm-loader": "^1.1.0"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }
