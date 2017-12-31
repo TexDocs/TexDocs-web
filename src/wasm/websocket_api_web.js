@@ -105,9 +105,7 @@ if( typeof Rust === 'undefined' ) {
         Module.instance.exports.__web_main();
     }
 
-    const __promise = fetch("/wasm/websocket_api_web.wasm")
-        .then(response => response.arrayBuffer())
-        .then(bytes => WebAssembly.instantiate(bytes, __imports))
+    const __promise = require("./websocket_api_web.wasm")(__imports)
         .then(results => {
             __load(results.instance);
             console.log("Finished loading Rust wasm module 'websocket_api_web'");

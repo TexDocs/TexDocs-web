@@ -105,18 +105,11 @@ if( typeof Rust === 'undefined' ) {
         Module.instance.exports.__web_main();
     }
 
-    const __promise = fetch("/wasm/rtvcs_web.wasm")
-        .then(response => response.arrayBuffer())
-        .then(bytes => WebAssembly.instantiate(bytes, __imports))
-        .then(results => {
-            __load(results.instance);
-            console.log("Finished loading Rust wasm module 'rtvcs_web'");
-            return Module.exports;
-        })
-        .catch(error => {
-            console.log("Error loading Rust wasm module 'rtvcs_web':", error);
-            throw error;
-        });
+    const results = require("./rtvcs_web.wasm");
+    console.warn("Results:", results);
+    __load(results.instance);
+    console.log("Finished loading Rust wasm module 'websocket_api_web'");
+    const __promise = Module.exports;
 
     Rust.rtvcs_web = __promise;
     return __promise;
