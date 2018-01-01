@@ -51,7 +51,7 @@ class Workspace extends Component {
     componentDidMount() {
         const effects = this.props.effects;
 
-        const WSAPI = require('../wasm/websocket_api_web');
+        const WSAPI = require("../wasm/websocket-api/Cargo.toml");
         WSAPI.then(effects.wsapiLoaded);
 
         const socket = new ReconnectingWebSocket('ws://localhost:1710', ['texdocs-collaboration']);

@@ -188,6 +188,17 @@ module.exports = {
               },
             ],
           },
+          // Cargo web crate loader
+          {
+            test: /Cargo.toml$/,
+            use: {
+              loader: "cargo-web-loader",
+              options: {
+                bin: "websocket_api_web",
+                verbose: true
+              }
+            }
+          },
           // WebAssembly loader. For testing purposes
           {
               test: /\.wasm$/,
