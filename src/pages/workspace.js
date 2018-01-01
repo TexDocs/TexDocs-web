@@ -77,8 +77,14 @@ class Workspace extends Component {
             effects.requestProjectDetails();
         }
 
+        const splitterProps = {
+            primaryMinSize: 500,
+            secondaryMinSize: 200,
+            secondaryInitialSize: 400
+        };
+
         let content = (
-            <SplitterLayout>
+            <SplitterLayout {...splitterProps}>
                 <Editor/>
                 <PDFView/>
             </SplitterLayout>
