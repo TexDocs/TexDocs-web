@@ -3,11 +3,12 @@ import {defaultEditorContent} from './DefaultEditorContent';
 
 /// Utils
 import { provideState, injectState, update } from "freactal";
-import {ReactHeight} from "react-height";
 import {logger} from "../../stateHelpers";
+import * as codemirror from 'codemirror';
 
 /// External components
-import CodeMirror from 'react-codemirror';
+import Measure from "react-measure";
+import {Controlled} from 'react-codemirror2';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/show-hint.css';
 
@@ -50,30 +51,45 @@ const wrapComponentWithState = provideState({
         editorHeight: 300
     }),
     effects: {
-        heightChanged: update((state, editorHeight) => {
-            // TODO This doesn't get called on window resize
-            if (state.editor) state.editor.setSize(null, editorHeight);
-            return { editorHeight };
+        heightChanged: update((state, dimensions) => {
+            if (state.editor) state.editor.setSize(null, dimensions.bounds.height);
+            return { editorHeight: dimensions.bounds.height };
         }),
         editorMounted: update((state, editor) => {
-            // TODO Setup editor
+            window.editor = editor;
+            /// Correctly indent soft-wrapped lines
+            const charWidth = editor.defaultCharWidth(), basePadding = 4;
+            editor.on("renderLine", function(cm, line, elt) {
+                const off = codemirror.countColumn(line.text, null, cm.getOption("tabSize")) * charWidth;
+                elt.style.textIndent = "-" + off + "px";
+                elt.style.paddingLeft = (basePadding + off) + "px";
+            });
+
+            /// Trigger autocompletion on cursor activity
+            // TODO Trigger at more reasonable conditions
+            // const hintOptions = { hint: onCompletion(codemirror) };
+            // editor.on('cursorActivity', function() {
+            //     editor.showHint(hintOptions);
+            // });
+
             return { editor };
         }),
-        setEditorContent: update((state, editorContent) => ({editorContent})),
+        cursorUpdate: update((state, editor) => {
+            // TODO Process cursorUpdate
+        }),
+        setEditorContent: update((state, editor, changeSet, editorContent) => {
+            // TODO Process changeset
+            return {editorContent};
+        }),
     },
     middleware: [logger("Editor")]
 });
 
 class Editor extends Component {
     autoComplete = cm => {
-        const codeMirror = this.refs['CodeMirror'].getCodeMirrorInstance();
-
-        const hintOptions = {
-            completeSingle: false,
-            completeOnSingleClick: false
-        };
-
-        codeMirror.showHint(cm, onCompletion(codeMirror), hintOptions);
+        cm.showHint({
+            hint: onCompletion(codemirror)
+        });
     };
 
     render() {
@@ -99,55 +115,21 @@ class Editor extends Component {
         };
 
         return (
-            <ReactHeight onHeightReady={effects.heightChanged} style={{height: "100%"}}>
-                <div style={{height: '100%'}}>
-                    <CodeMirror
-                        ref="CodeMirror"
-                        autoFocus
-                        value={state.editorContent}
-                        style={{height: state.editorHeight}}
-                        onChange={(value, data) => {
-                            // TODO Add data to version vector and validate with value.
-                            effects.setEditorContent(value);
-                        }}
-                        options={options}
-                        onCursorActivity={(editor) => {
-                            // Cursor moved!
-                        }}
-                    />
-
-                    {/*<Controlled*/}
-                        {/*autoFocus*/}
-                        {/*style={{height: state.editorHeight}}*/}
-                        {/*editorDidMount={effects.editorMounted}*/}
-                        {/*value={state.editorContent}*/}
-                        {/*onBeforeChange={(editor, data, value) => {*/}
-                            {/*effects.setEditorContent(value);*/}
-                        {/*}}*/}
-                        {/*options={{*/}
-                            {/*mode: "stex",*/}
-                            {/*theme: "material",*/}
-                            {/*lineNumbers: true,*/}
-                            {/*indentUnit: 4,*/}
-                            {/*lineWrapping: true,*/}
-                            {/*placeholder: "% Enter LaTeX code here",*/}
-                            {/*rulers: [*/}
-                                {/*{column: 20}*/}
-                            {/*],*/}
-                            {/*foldGutter: true,*/}
-                            {/*gutters: ["CodeMirror-foldgutter"],*/}
-                            {/*extraKeys: {*/}
-                                {/*'Ctrl-Space': this.autoComplete,*/}
-                                {/*'Ctrl-S': () => {},*/}
-                                {/*'Cmd-S': () => {}*/}
-                            {/*}*/}
-                        {/*}}*/}
-                        {/*onChange={(editor, data, value) => {*/}
-                            {/*// console.log(data);*/}
-                        {/*}}*/}
-                    {/*/>*/}
-                </div>
-            </ReactHeight>
+            <Measure bounds onResize={effects.heightChanged} style={{height: "100%"}}>
+                {({measureRef}) =>
+                    <div ref={measureRef} style={{height: '100%'}}>
+                        <Controlled
+                            autoFocus
+                            style={{height: state.editorHeight}}
+                            editorDidMount={effects.editorMounted}
+                            onBeforeChange={effects.setEditorContent}
+                            value={state.editorContent}
+                            options={options}
+                            onCursorActivity={effects.cursorUpdate}
+                        />
+                    </div>
+                }
+            </Measure>
         );
     }
 }
