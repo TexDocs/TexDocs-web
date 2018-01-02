@@ -5,7 +5,7 @@ import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import { deepOrange, teal } from 'material-ui/colors';
 
-import Workspace from "./pages/workspace";
+import Workspace from "./pages/workspace/workspace";
 import Dashboard from "./pages/dashboard";
 
 const theme = createMuiTheme({
