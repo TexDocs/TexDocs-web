@@ -1,37 +1,42 @@
 import { provideState, update } from "freactal";
 import {logger} from "../../stateHelpers";
 
+const sendHandshake = (socket, wsapi) => {
+    const handshake = new Uint8Array(wsapi.createHandshake());
+    console.warn("Sending handshake", handshake);
+    socket.send(handshake.buffer);
+};
+
+export const requestProject = (id, socket, wsapi) => {
+    const request = new Uint8Array(wsapi.requestProject(id));
+    console.warn(`Requesting project ${id}`);
+    socket.send(request.buffer);
+};
+
 export const wrapWorkspaceWithState = provideState({
     initialState: () => ({
         wsapi: undefined,
+        projectID: undefined,
         project: undefined,
         socket: undefined,
         connected: false,
-        workspaceHeight: 600
+        workspaceHeight: 600,
+        sessionID: undefined
     }),
-    computed: {
-        projectDetailsAvailable: ({project}) => typeof project === 'object',
-    },
     effects: {
         setWorkspaceHeight: update((state, dimensions) => ({ workspaceHeight: dimensions.bounds.height })),
-        setConnected:  update((state, connected) => ({ connected })),
-        setProjectID: update((state, project) => ({ project })),
-        wsapiLoaded: update((state, wsapi) => ({ wsapi })),
         setWebsocket: update((state, socket) => ({ socket })),
-        requestProjectDetails: update((state) => {
-            // TODO Run async request (write wrapper)
-            state.socket.send(
-                new Uint16Array(
-                    state.wsapi.requestProject(state.project)
-                ).buffer
-            );
-
-            // TODO Replace fake response
-            const response = [  146,  217,  36,  57,  51,  54,  100,  97,  48,  49,  102,  45,  57,  97,  98,  100,  45,  52,  100,  57,  100,  45,  56,  48,  99,  55,  45,  48,  50,  97,  102,  56,  53,  99,  56,  50,  50,  97,  56,  168,  83,  111,  109,  101,  78,  97,  109,  101,  1];
-            console.log("Fake Response", response, state.wsapi.parseMessage(response));
-
-            return { project: state.wsapi.parseMessage(response) };
-        })
+        setConnected:  update((state, connected) => {
+            if (connected && state.wsapi) sendHandshake(state.socket, state.wsapi);
+            return ({ connected });
+        }),
+        setProjectID: update((state, projectID) => ({ projectID })),
+        setSessionID: update((state, sessionID) => ({ sessionID })),
+        setProject: update((state, project) => ({ project })),
+        wsapiLoaded: update((state, wsapi) => {
+            if (state.connected) sendHandshake(state.socket, wsapi);
+            return ({ wsapi });
+        }),
     },
     middleware: [logger("workspace")]
 });
