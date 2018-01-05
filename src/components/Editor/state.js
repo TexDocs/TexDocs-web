@@ -26,6 +26,9 @@ export const wrapEditorWithState = provideState({
             //     editor.showHint(hintOptions);
             // });
 
+            /// Set the height
+            editor.setSize(null, state.workspaceHeight);
+
             return { editor };
         }),
         cursorUpdate: update((state, editor) => {

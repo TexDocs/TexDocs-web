@@ -219,7 +219,8 @@ module.exports = {
                             loader: "cargo-web-loader",
                             options: {
                                 bin: "websocket_api_web",
-                                verbose: true
+                                verbose: true,
+                                flags: '--features wasm'
                             }
                         }
                     },

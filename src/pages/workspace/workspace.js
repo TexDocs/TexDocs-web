@@ -8,13 +8,25 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 /// External components
 import Measure from "react-measure";
 import SplitterLayout from 'react-splitter-layout';
-// import {AppBar, Toolbar, Typography} from "material-ui";
+import {AppBar, Icon, Paper, Toolbar, withStyles} from "material-ui";
 import Style from 'react-style-tag';
 
 /// Internal components
 import Editor from "../../components/Editor/Editor";
 import PDFView from "../../components/PDFView";
 import Loader from "../../components/Loader/Loader";
+import Menubar from "../../components/Menubar/Menubar";
+
+const TOOLBAR_HEIGHT = 36;
+const MENUBAR_HEIGHT = require("../../components/Menubar/Menubar").MENUBAR_HEIGHT;
+
+const styles = theme => ({
+    toolbar: {
+        height: `${TOOLBAR_HEIGHT}pt`,
+        minHeight: "auto",
+        backgroundColor: "#f1f1f1"
+    }
+});
 
 class Workspace extends Component {
     updateWebsocketHandler = (socket) => {
@@ -35,6 +47,10 @@ class Workspace extends Component {
                     break;
                 case "HandshakeError":
                     console.error("Handshake failed!", value);
+                    break;
+                case "ProjectRequestError":
+                    console.error("Failed to retrieve project", value);
+                    effects.setProject(undefined);
                     break;
                 case "Project":
                     effects.setProject(value);
@@ -66,19 +82,26 @@ class Workspace extends Component {
         socket.addEventListener('close', () => {
             effects.setConnected(false);
         });
+        socket.addEventListener('error', console.error);
 
         this.updateWebsocketHandler(socket);
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.match.params.id !== prevProps.match.params.id)
-            this.props.effects.setProjectID(this.props.match.params.id);
+        const currentProjectID = this.props.match.params.id;
+        const { state } = this.props;
+
+        if (currentProjectID !== prevProps.match.params.id) {
+            this.props.effects.setProjectID(currentProjectID);
+            if (state.connected && state.wsapi)
+                requestProject(currentProjectID, this.props.state.socket, this.props.state.wsapi);
+        }
 
         if (this.props.state.socket) this.updateWebsocketHandler(this.props.state.socket);
     }
 
     render() {
-        const { state, effects } = this.props;
+        const { state, effects, classes } = this.props;
 
         const splitterProps = {
             primaryMinSize: 500,
@@ -88,9 +111,9 @@ class Workspace extends Component {
         };
 
         let content = (
-            <Measure bounds onResize={effects.setWorkspaceHeight} style={{height: "100%"}}>
+            <Measure bounds onResize={effects.setWorkspaceHeight}>
                 {({measureRef}) =>
-                    <div ref={measureRef} style={{height: '100%'}}>
+                    <div ref={measureRef} style={{height: `calc(100% - ${MENUBAR_HEIGHT + TOOLBAR_HEIGHT}pt)`}}>
                         <SplitterLayout {...splitterProps}>
                             <Editor/>
                             <PDFView/>
@@ -115,17 +138,14 @@ class Workspace extends Component {
                         height: ${state.workspaceHeight}px;
                     }
                 `}</Style>
-                {/*<AppBar color="primary">*/}
-                    {/*<Toolbar>*/}
-                        {/*<Typography type="title" color="inherit">*/}
-                            {/*{state.projectDetailsAvailable ? state.project.name : "Untitled"}*/}
-                        {/*</Typography>*/}
-                    {/*</Toolbar>*/}
-                {/*</AppBar>*/}
+                <Paper square>
+                        <Menubar/>
+                        <Toolbar className={classes.toolbar}>Toolbar</Toolbar>
+                </Paper>
                 {content}
             </div>
         );
     }
 }
 
-export default wrapWorkspaceWithState(injectState(Workspace));
+export default wrapWorkspaceWithState(injectState(withStyles(styles)(Workspace)));

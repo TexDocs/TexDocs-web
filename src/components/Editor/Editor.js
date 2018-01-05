@@ -74,7 +74,7 @@ class Editor extends Component {
             onBeforeChange: effects.setEditorContent,
             options: {
                 mode: "stex",
-                theme: "material",
+                // theme: "material",
                 lineNumbers: true,
                 indentUnit: 4,
                 lineWrapping: true,
