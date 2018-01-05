@@ -1,0 +1,6 @@
+[submodule "src/wasm/websocket-api"]
+	path = src/wasm/websocket-api
+	url = git@github.com:texdocs/websocket-api
+[submodule "src/wasm/rtvcs"]
+	path = src/wasm/rtvcs
+	url = git@github.com:texdocs/rtvcs
