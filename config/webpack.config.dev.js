@@ -203,7 +203,7 @@ module.exports = {
                     // WebAssembly loader. For testing purposes
                     {
                         test: /\.wasm$/,
-                        loaders: ['wasm-loader']
+                        loaders: [{ loader: require.resolve('babel-loader') }, 'wasm-loader']
                     },
                     // "file" loader makes sure those assets get served by WebpackDevServer.
                     // When you `import` an asset, you get its (virtual) filename.

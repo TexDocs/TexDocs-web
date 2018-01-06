@@ -227,7 +227,7 @@ module.exports = {
                     // WebAssembly loader. For testing purposes
                     {
                         test: /\.wasm$/,
-                        loaders: ['wasm-loader']
+                        loaders: [{ loader: require.resolve('babel-loader') }, 'wasm-loader']
                     },
                     // "file" loader makes sure assets end up in the `build` folder.
                     // When you `import` an asset, you get its filename.
