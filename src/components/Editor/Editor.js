@@ -55,7 +55,7 @@ class Editor extends Component {
         cm.showHint({
             hint: onCompletion(codemirror)
         });
-        
+
         // const cursor = cm.getCursor();
         // const doc = cm.getDoc();
 

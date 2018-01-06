@@ -8,7 +8,7 @@ const sendHandshake = (socket, wsapi) => {
 };
 
 export const requestProject = (id, socket, wsapi) => {
-    const request = new Uint8Array(wsapi.requestProject(id));
+    const request = new Uint8Array(wsapi.requestProject(id, true));
     console.warn(`Requesting project ${id}`);
     socket.send(request.buffer);
 };
