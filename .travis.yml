@@ -4,6 +4,8 @@ cache:
   cargo: true
   directories:
     - "node_modules"
+before_install:
+  - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
 before_script:
   - which rustup || (curl https://sh.rustup.rs -sSf | sh --channel=nightly)
   - export PATH="$PATH:$HOME/.cargo/bin"
