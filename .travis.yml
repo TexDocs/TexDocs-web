@@ -12,7 +12,7 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 before_script:
-  - which rustup || (curl https://sh.rustup.rs -sSf | sh --channel=nightly)
+  - which rustup || (curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly)
   - export PATH="$PATH:$HOME/.cargo/bin"
   - rustup target add wasm32-unknown-unknown
   - (which rustfmt && cargo fmt --version) || cargo install rustfmt-nightly --force
