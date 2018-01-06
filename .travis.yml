@@ -12,8 +12,8 @@ before_install:
   - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 before_script:
-  - which rustup || (curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y)
   - export PATH="$PATH:$HOME/.cargo/bin"
+  - which rustup || (curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y)
   - rustup target add wasm32-unknown-unknown
   - which cargo-web || cargo install cargo-web
 script:
