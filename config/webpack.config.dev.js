@@ -191,19 +191,22 @@ module.exports = {
                     // Cargo web crate loader
                     {
                         test: /Cargo.toml$/,
-                        use: {
-                            loader: "cargo-web-loader",
-                            options: {
-                                bin: "websocket_api_web",
-                                verbose: true,
-                                // flags: '--features wasm'
-                            }
-                        }
+                        loaders: [
+                            {
+                                loader: "cargo-web-loader",
+                                options: {
+                                    bin: "websocket_api_web",
+                                    verbose: true
+                                }
+                            }],
                     },
                     // WebAssembly loader. For testing purposes
                     {
                         test: /\.wasm$/,
-                        loaders: [{ loader: require.resolve('babel-loader') }, 'wasm-loader']
+                        loader: require.resolve('file-loader'),
+                        options: {
+                            name: 'static/wasm/[name].[hash:8].[ext]'
+                        }
                     },
                     // "file" loader makes sure those assets get served by WebpackDevServer.
                     // When you `import` an asset, you get its (virtual) filename.

@@ -10,6 +10,7 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const eslintFormatter = require('react-dev-utils/eslintFormatter');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const paths = require('./paths');
 const getClientEnvironment = require('./env');
 
@@ -149,7 +150,6 @@ module.exports = {
                         include: paths.appSrc,
                         loader: require.resolve('babel-loader'),
                         options: {
-
                             compact: true,
                         },
                     },
@@ -215,19 +215,22 @@ module.exports = {
                     // Cargo web crate loader
                     {
                         test: /Cargo.toml$/,
-                        use: {
+                        loaders: [
+                          {
                             loader: "cargo-web-loader",
                             options: {
                                 bin: "websocket_api_web",
-                                verbose: true,
                                 // flags: '--features wasm'
                             }
-                        }
+                        }],
                     },
                     // WebAssembly loader. For testing purposes
                     {
                         test: /\.wasm$/,
-                        loaders: [{ loader: require.resolve('babel-loader') }, 'wasm-loader']
+                        loader: require.resolve('file-loader'),
+                        options: {
+                            name: 'static/wasm/[name].[hash:8].[ext]'
+                        }
                     },
                     // "file" loader makes sure assets end up in the `build` folder.
                     // When you `import` an asset, you get its filename.
@@ -251,6 +254,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new ProgressBarPlugin(),
         // Makes some environment variables available in index.html.
         // The public URL is available as %PUBLIC_URL% in index.html, e.g.:
         // <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
