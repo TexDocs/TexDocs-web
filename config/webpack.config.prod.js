@@ -220,7 +220,7 @@ module.exports = {
                             options: {
                                 bin: "websocket_api_web",
                                 verbose: true,
-                                flags: '--features wasm'
+                                // flags: '--features wasm'
                             }
                         }
                     },
