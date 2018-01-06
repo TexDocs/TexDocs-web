@@ -8,7 +8,7 @@ import ReconnectingWebSocket from "reconnecting-websocket";
 /// External components
 import Measure from "react-measure";
 import SplitterLayout from 'react-splitter-layout';
-import {AppBar, Icon, Paper, Toolbar, withStyles} from "material-ui";
+import {Paper, Toolbar, withStyles} from "material-ui";
 import Style from 'react-style-tag';
 
 /// Internal components
@@ -34,6 +34,8 @@ class Workspace extends Component {
         socket.onmessage = (msg) => {
             const data = Array.from(new Uint8Array(msg.data));
             const parsed = state.wsapi.parseMessage(data);
+
+            if (parsed === null) return;
 
             const type = parsed[0];
             const value = parsed[1];

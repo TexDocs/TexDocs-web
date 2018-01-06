@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import { injectState } from "freactal";
 
 /// External components
-import {Button, Icon, TextField, Toolbar, Typography, withStyles} from "material-ui";
+import {Button, Icon, Toolbar, Typography, withStyles} from "material-ui";
 
 export const MENUBAR_HEIGHT = 51;
 

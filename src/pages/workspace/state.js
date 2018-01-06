@@ -3,13 +3,13 @@ import {logger} from "../../stateHelpers";
 
 const sendHandshake = (socket, wsapi) => {
     const handshake = new Uint8Array(wsapi.createHandshake());
-    console.warn("Sending handshake", handshake);
+    console.log("Sending handshake", handshake);
     socket.send(handshake.buffer);
 };
 
 export const requestProject = (id, socket, wsapi) => {
     const request = new Uint8Array(wsapi.requestProject(id, true));
-    console.warn(`Requesting project ${id}`);
+    console.log(`Requesting project ${id}`, request);
     socket.send(request.buffer);
 };
 
