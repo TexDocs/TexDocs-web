@@ -14,6 +14,7 @@ before_install:
 before_script:
   - export PATH="$PATH:$HOME/.cargo/bin"
   - which rustup || (curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y)
+  - rustup show
   - rustup target add wasm32-unknown-unknown
   - which cargo-web || cargo install cargo-web
 script:
