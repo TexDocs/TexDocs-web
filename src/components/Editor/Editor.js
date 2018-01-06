@@ -55,6 +55,19 @@ class Editor extends Component {
         cm.showHint({
             hint: onCompletion(codemirror)
         });
+        
+        // const cursor = cm.getCursor();
+        // const doc = cm.getDoc();
+
+        // doc.markText(cursor, {line: cursor.line, ch: cursor.ch + 5}, {
+        //     css: "background-color: #fe3"
+        // });
+
+        // var div = document.createElement('span');
+        // div.innerHTML = "Hello world!";
+        // doc.setBookmark(cursor, {
+        //     widget: div
+        // });
     };
 
     componentDidUpdate(prevProps) {
