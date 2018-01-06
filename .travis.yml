@@ -15,7 +15,6 @@ before_script:
   - which rustup || (curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain nightly -y)
   - export PATH="$PATH:$HOME/.cargo/bin"
   - rustup target add wasm32-unknown-unknown
-  - (which rustfmt && cargo fmt --version) || cargo install rustfmt-nightly --force
   - which cargo-web || cargo install cargo-web
 script:
   - npm run build
