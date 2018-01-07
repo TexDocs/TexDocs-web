@@ -1,1 +1,1 @@
-# TexDocs-web
+# TexDocs-web [![Build Status](https://travis-ci.org/TexDocs/TexDocs-web.svg?branch=master)](https://travis-ci.org/TexDocs/TexDocs-web)
