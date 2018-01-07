@@ -2,12 +2,11 @@ import React, { Component } from "react";
 
 /// Utils
 import { injectState } from "freactal";
-import * as codemirror from 'codemirror';
+import * as CodeMirror from 'codemirror';
 import {wrapEditorWithState} from "./state";
 
 
 /// External components [Codemirror]
-import {Controlled} from 'react-codemirror2';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/stex/stex';
 
@@ -23,6 +22,8 @@ import 'codemirror/addon/hint/show-hint.css';
 import {onCompletion} from "./autoComplete/onCompletion";
 
 
+require('codemirror/addon/display/rulers');
+require('codemirror/addon/selection/active-line');
 // require('codemirror/addon/comment/comment');
 // require('codemirror/addon/edit/closebrackets');
 // require('codemirror/addon/edit/matchbrackets');
@@ -51,61 +52,99 @@ require('./Editor.css');
 
 
 class Editor extends Component {
-    autoComplete = cm => {
-        cm.showHint({
-            hint: onCompletion(codemirror)
+    constructor(args) {
+        super(args);
+
+        this.cursors = {};
+    }
+
+    addCursor = (cm, sessionID, cursor) => {
+        const doc = cm.getDoc();
+
+        const headPos = doc.posFromIndex(cursor.head);
+        const anchorPos = doc.posFromIndex(cursor.anchor);
+
+        if (this.cursors.hasOwnProperty(sessionID)) {
+            const previousDocumentCursor = this.cursors[sessionID];
+            if (previousDocumentCursor.selection) previousDocumentCursor.selection.clear();
+            if (previousDocumentCursor.head) previousDocumentCursor.head.clear();
+        }
+
+        const documentCursor = {
+            selection: undefined,
+            head: undefined
+        };
+
+        if (headPos !== anchorPos) {
+            documentCursor.selection = doc.markText(anchorPos, headPos, {
+                css: "background-color: #fe3"
+            });
+        }
+
+        const div = document.createElement('span');
+        div.className = "collab-caret";
+        documentCursor.head = doc.setBookmark(headPos, {
+            widget: div,
         });
 
-        // const cursor = cm.getCursor();
-        // const doc = cm.getDoc();
+        this.cursors[sessionID] = documentCursor;
+    };
 
-        // doc.markText(cursor, {line: cursor.line, ch: cursor.ch + 5}, {
-        //     css: "background-color: #fe3"
-        // });
+    autoComplete = cm => {
+        cm.showHint({
+            hint: onCompletion(CodeMirror)
+        });
 
-        // var div = document.createElement('span');
-        // div.innerHTML = "Hello world!";
-        // doc.setBookmark(cursor, {
-        //     widget: div
-        // });
+        this.addCursor(cm, "someCursorID", {
+            anchor: Math.floor(Math.random()*(200-30+1)+30),
+            head: Math.floor(Math.random()*(200-30+1)+30),
+        });
     };
 
     componentDidUpdate(prevProps) {
-        if (prevProps.state.workspaceHeight !== this.props.state.workspaceHeight && this.props.state.editor)
+        if (prevProps.state.workspaceHeight !== this.props.state.workspaceHeight && this.props.state.editor) {
             this.props.state.editor.setSize(null, this.props.state.workspaceHeight);
+            // console.log("Setting content");
+        }
     }
 
-    render() {
+    componentDidMount() {
         const { state, effects } = this.props;
 
-        const editorProps = {
-            autoFocus: true,
+        const options = {
             value: state.editorContent,
-            style: { height: state.workspaceHeight },
-            editorDidMount: effects.editorMounted,
-            onCursorActivity: effects.cursorUpdate,
-            onBeforeChange: effects.setEditorContent,
-            options: {
-                mode: "stex",
-                // theme: "material",
-                lineNumbers: true,
-                indentUnit: 4,
-                lineWrapping: true,
-                placeholder: "% Enter LaTeX code here",
-                rulers: [
-                    {column: 20}
-                ],
-                foldGutter: true,
-                gutters: ["CodeMirror-foldgutter"],
-                extraKeys: {
-                    'Ctrl-Space': this.autoComplete,
-                    'Ctrl-S': () => {},
-                    'Cmd-S': () => {}
+            mode: "stex",
+            // theme: "material",
+            lineNumbers: true,
+            indentUnit: 4,
+            lineWrapping: true,
+            placeholder: "% Enter LaTeX code here",
+            styleActiveLine: true,
+            rulers: [
+                {column: 120}
+            ],
+            foldGutter: true,
+            gutters: ["CodeMirror-foldgutter"],
+            extraKeys: {
+                'Ctrl-Space': this.autoComplete,
+                'Ctrl-S': () => {},
+                'Cmd-S': () => {
+                    const doc = this.props.state.editor.getDoc();
+                    const pos = doc.posFromIndex(10);
+                    doc.replaceRange("Hello world!", pos, pos);
                 }
             }
         };
 
-        return <Controlled {...editorProps} />;
+        const editor = CodeMirror(this.editor, options);
+
+        editor.on('change', console.log);
+
+        effects.editorMounted(editor);
+    }
+
+    render() {
+        return <div ref={(input) => { this.editor = input; }} />;
     }
 }
 
